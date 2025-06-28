@@ -1,1 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat</title>
+</head>
+<body>
+    <h2>Chat with AI Bot</h2>
+    <input id="messageInput" type="text" autocomplete="off">
+    <button onclick="sendMessage()">Send</button>
+    <div id="chatLog"></div>
+
+    <script>
+        const socket = new WebSocket('ws://' + window.location.host + '/ws/chat/');
+
+        socket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            document.getElementById('chatLog').innerHTML += '<p><b>Bot:</b> ' + data.message + '</p>';
+        };
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value;
+            socket.send(JSON.stringify({ 'message': message }));
+            document.getElementById('chatLog').innerHTML += '<p><b>You:</b> ' + message + '</p>';
+            input.value = '';
+        }
+    </script>
+</body>
+</html>
 
